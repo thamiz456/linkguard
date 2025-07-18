@@ -1,31 +1,34 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-
 <head>
   <!-- Metadata -->
   <meta charset="utf-8" />
   <meta name="author" content="Jacob Strieb" />
-  <meta name="description" content="Password protect links using AES in the browser." />
+  <meta name="description" content="Brute force password-protected links created with Link Lock from within the browser." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
 
-  <title>Link Lock - Password-protect links</title>
+  <title>Brute Force Link Lock</title>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="style.css" type="text/css" />
+  <link rel="stylesheet" href="../style.css" type="text/css" />
 
   <!-- Scripts -->
-  <script type="text/javascript" src="b64.js"></script>
-  <script type="text/javascript" src="api.js"></script>
-  <script type="text/javascript" src="index.js"> </script>
+  <script type="text/javascript" src="../b64.js"></script>
+  <script type="text/javascript" src="../api.js"></script>
+  <script type="text/javascript" src="bruteforce.js"></script>
 </head>
 
-<body onload="main()">
+<body>
+  <!-- View on GitHub ribbon -->
+  <a href="https://github.com/jstrieb/link-lock" target="_blank">
+    <img class="ribbon" src="../corner-ribbon-minified.svg" alt="View on GitHub" />
+  </a>
+
   <!-- Explanation for those who do not have JavaScript enabled -->
   <noscript>
-  <div class="red-border">
-    <p>If you are seeing this, it means that you have JavaScript disabled. Please enable JavaScript to access the locked link.</p>
+  <div style="border: 3px solid red; padding: 2em;">
+    <p>If you are seeing this, it means that you have JavaScript disabled. As a result, the application will not work properly for you. For example, none of the buttons will work.</p>
 
     <p>This application is entirely programmed in JavaScript. This was done intentionally, so that all encryption and decryption happens client-side. This means the code runs as a distributed application, relying only on GitHub Pages for infrastructure. It also means that no data about locked links is ever stored on a server. The code is designed to be auditable so users can investigate what is happening behind the scenes.</p>
 
@@ -33,25 +36,37 @@
   </div>
   </noscript>
 
-  <div class="form" style="display: none">
-    <p>Please enter the password to unlock the link.</p>
-    <p id="hint"></p>
+  <!-- Introduction -->
+  <h1>Brute Force Link Lock URLs</h1>
+  <p>"Brute forcing" a password is the act of guessing it by brute force – literally trying all passwords until one works. This page is a simple, proof-of-concept brute force application. It is designed to decrypt <a href="https://github.com/jstrieb/link-lock" target="_blank">Link Lock</a> URLs by trying every single possible password. It is not optimized in any way, and does minimal error-checking.</p>
+  <p>For more information about brute forcing Link Lock URLs, read the open <a href="https://github.com/jstrieb/link-lock/issues/1" target="_blank">GitHub issue</a> about it.</p>
+  <p>For a command-line brute force application that performs parallel processing using all cores of the CPU, check out <a href="https://github.com/jstrieb/bruteforce-link-lock">this project</a>.</p>
 
-    <hr />
+  <hr />
 
-    <label for="password">password</label>
-    <input type="password" id="password" autofocus />
-    <button id="unlockbutton">Unlock link</button>
+  <!-- Main form -->
+  <div class="form">
+    <label for="charset">charset</label>
+    <input type="text" id="charset" value="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" />
+    <label for="encrypted-url">encrypted url</label>
+    <input type="url" id="encrypted-url" oninput="document.querySelector('.alert').style.opacity = 0" />
+    <button onclick="onBruteForce()">Brute Force</button>
+    <p class="alert">INVISIBLE</p>
   </div>
 
-  <!-- Display errors in a big red box -->
-  <div class="error red-border" style="display: none">
-    <p id="errortext">Error</p>
-    <button onclick="main()">Try again</button>
-    <a href="https://jstrieb.github.io/link-lock"><button>Lock a link</button></a>
-    <a href="https://jstrieb.github.io/link-lock/decrypt/" id="no-redirect" target="_blank"><button>Decrypt without redirect</button></a>
-    <a href="https://jstrieb.github.io/link-lock/hidden/" id="hidden" target="_blank"><button>Create hidden bookmark</button></a>
+  <hr />
+
+  <!-- Output area -->
+  <div class="output">
+    <label for="output">brute-forced password</label>
+    <input type="text" id="output" />
   </div>
+
+  <!-- Page footer -->
+  <footer>
+  <hr />
+  <p class="copyright">Created by <a href="https://jstrieb.github.io">Jacob Strieb</a>.</p>
+  </footer>
 </body>
 
 </html>
